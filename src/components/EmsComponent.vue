@@ -58,26 +58,28 @@ const fetchEmps = async () => {
         // empList.value.push(newEmp.value);
         await emsStore.addEmployee(newEmp.value);
         resetForm()
+        fetchEmps()
     }
 
     const updateEmp = async () => {
         //  empList[i] = selected.value = 
         console.log("updating editingEmp",editingEmp)
-        await emsStore.updateEmployee(newEmp.value);
+        await emsStore.updateEmployee(editingEmp.value);
         cancelEdit()
+        fetchEmps()
     }
     const deleteEmp = async (id) => {
         console.log("deleting id",id)
         // empList.value = empList.value.filter((t) => t !== emp)
         await emsStore.deleteEmployee(id);
         cancelEdit()
+        fetchEmps()
     }
     const editEmp = (id) => {
         const emp = emsStore.empList.find((t) => t.employeeId === id);
         if (emp) {
             editingEmp.value = { ...emp }; // Create a copy
         }
-        // editingEmp.value = { ...emp } // Create a copy to avoid direct mutations
     }
 
     const cancelEdit = () => {

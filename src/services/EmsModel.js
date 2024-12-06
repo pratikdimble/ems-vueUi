@@ -2,7 +2,7 @@ export const EmsModel = {
     validate(emp) {
       const errors = {};
   
-      if (!emp.name || emp.user.trim() === "") {
+      if (!emp.name || emp.name.trim() === "") {
         errors.name = "Name cannot be empty";
       }
   

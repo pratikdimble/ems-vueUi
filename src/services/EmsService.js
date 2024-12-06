@@ -18,7 +18,6 @@ export const EmsService = {
     if (Object.keys(validationErrors).length > 0) {
       throw validationErrors;
     }
-
     try {
       const response = await axios.post(API_BASE_URL, emp);
       return response.data;
@@ -32,7 +31,6 @@ export const EmsService = {
     if (Object.keys(validationErrors).length > 0) {
       throw validationErrors;
     }
-
     try {
       const response = await axios.put(`${API_BASE_URL}/${emp.employeeId}`, emp);
       return response.data;

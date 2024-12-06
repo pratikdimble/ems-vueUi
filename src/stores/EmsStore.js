@@ -20,31 +20,40 @@ export const useEmsStore = defineStore('emsStore', {
             }
         },
         async addEmployee(newEmp) {
+            this.loading = true;
             const errors = EmsModel.validate(newEmp);
             if (Object.keys(errors).length > 0) {
                 this.validationErrors = errors;
+            }else{
+                try {
+                    await EmsService.addEmployee(newEmp)
+                } catch (err) {
+                    this.error = 'Failed to add employee';
+                } finally {
+                    this.loading = false;
+                }
             }
-
-            // Add Service.addTodo()
-
-
         },
         async updateEmployee(updatedEmp) {
             const index = this.empList.findIndex((emp) => emp.employeeId === updatedEmp.employeeId);
-            if (index !== -1) {
-                this.empList[index] = { ...updatedEmp };
-            } else {
-                this.error = 'Employee not found';
+            const errors = EmsModel.validate(updatedEmp);
+            if (Object.keys(errors).length > 0) {
+                this.validationErrors = errors;
+            }else{
+                if (index !== -1) {
+                    await EmsService.updateEmployee(updatedEmp)
+                } else {
+                    this.error = 'Employee not found';
+                }
             }
-
-            // Add Service.updateTodo()
-
-
         },
         async deleteEmployee(id) {
-            this.empList = this.empList.filter((emp) => emp.employeeId !== id);
-
-            // Add Service.deleteTodo()
+            const index = this.empList.findIndex((emp) => emp.employeeId === id);
+            if (index !== -1) {
+                await EmsService.deleteEmployee(id)
+            } else {
+                this.error = 'Employee not found';
+            }    
         },
     },
 });

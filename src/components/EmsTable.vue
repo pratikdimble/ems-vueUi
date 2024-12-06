@@ -4,6 +4,9 @@
             <tr>
                 <th>Name</th>
                 <th>Address</th>
+                <th>Age</th>
+                <th>Department</th>
+                <th>Designation</th>
                 <th>Joining Date</th>
                 <th>Edit</th>
                 <th>Delete</th>
@@ -13,11 +16,12 @@
             <tr v-for="emp in empList" :key="emp.employeeId">
                 <td>{{ emp.name }} </td>
                 <td>{{ emp.address }}</td>
+                <td>{{ emp.age }}</td>
+                <td>{{ emp.department }}</td>
+                <td>{{ emp.designation }}</td>
                 <td>{{ emp.joiningDate }}</td>
                 <td><button :aria-busy="loading" :disabled="loading" @click="() => editHandler(emp.employeeId)">Edit</button></td>
                 <td><button :aria-busy="loading" :disabled="loading" @click="() => deleteHandler(emp.employeeId)">Delete</button></td>
-                <!-- <td><button @click="editEmp(emp)">Edit</button></td> -->
-                <!-- <td><button @click="deleteEmp(emp,emp.id)">Delete</button></td> -->
             </tr>
         </tbody>
     </table>
