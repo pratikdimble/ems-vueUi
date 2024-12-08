@@ -55,5 +55,27 @@ export const useEmsStore = defineStore('emsStore', {
                 this.error = 'Employee not found';
             }    
         },
+        
+        async getEmployeeByDepartment(dept) {
+            this.loading = true;
+            try {
+                this.empList = await EmsService.getEmployeeByDepartment(dept)
+            } catch (err) {
+                this.error = 'Failed to fetch employees';
+            } finally {
+                this.loading = false;
+            }   
+        },
+        
+        async sortEmployeeByJoiningDate(order) {
+            this.loading = true;
+            try {
+                this.empList = await EmsService.sortEmployeeByJoiningDate(order)
+            } catch (err) {
+                this.error = 'Failed to fetch employees';
+            } finally {
+                this.loading = false;
+            }   
+        },
     },
 });

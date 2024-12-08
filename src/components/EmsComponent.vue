@@ -6,23 +6,6 @@ import EmsTable from './EmsTable.vue';
 
 const emsStore = useEmsStore();
 
-// const empList = ref([{
-//     employeeId:'',
-//     name: 'niraj',
-//     address: 'mumbai',
-//     age: 28,
-//     designation: 'software engineer',
-//     department:'DU1',
-//     joiningDate: '12/11/2024'
-// }, {
-//     employeeId:'',
-//     name: 'pratik',
-//     address: 'pune',
-//     age: 30,
-//     designation: 'sr software engineer',
-//     department:'DU2',
-//     joiningDate: '19/11/2024'
-// }])
 const newEmp = ref({
     employeeId:'',
     name: '',
@@ -33,11 +16,20 @@ const newEmp = ref({
     joiningDate: ''
 })
 const editingEmp = ref(null)
-// const loading = ref(false)
-// const error = ref(null)
-// const validationErrors = ref({})
+const selected = ref(null)
+const orderSelected  = ref(null)
+const pick= ref({value:0})
+const isShow= ref(true)
+
+const clearValues= ()=>{
+    pick.value = 0,
+    isShow.value = true,
+    orderSelected.value = null
+    selected.value = null
+}
 
 const fetchEmps = async () => {
+    clearValues()
     await emsStore.fetchEmps()
 }
     const resetForm = () => {
@@ -55,14 +47,12 @@ const fetchEmps = async () => {
 
     const addEmployee = async () => {
         console.log("Adding newEmp",newEmp)
-        // empList.value.push(newEmp.value);
         await emsStore.addEmployee(newEmp.value);
         resetForm()
         fetchEmps()
     }
 
     const updateEmp = async () => {
-        //  empList[i] = selected.value = 
         console.log("updating editingEmp",editingEmp)
         await emsStore.updateEmployee(editingEmp.value);
         cancelEdit()
@@ -70,7 +60,6 @@ const fetchEmps = async () => {
     }
     const deleteEmp = async (id) => {
         console.log("deleting id",id)
-        // empList.value = empList.value.filter((t) => t !== emp)
         await emsStore.deleteEmployee(id);
         cancelEdit()
         fetchEmps()
@@ -85,91 +74,85 @@ const fetchEmps = async () => {
     const cancelEdit = () => {
         editingEmp.value = null
         emsStore.validationErrors = {}
+        resetForm()
     }
 
-    fetchEmps()
+    const radioClick = async(flag)=>{
+        if(flag){
+            console.log("Search calling")
+            isShow.value = true
+        }
+            
+        else{
+            console.log("Sort calling")
+            isShow.value = false
+        }
+    }
 
-    // function addEmployee() {
-    //     empList.value.push(newEmp.value);
-    //     // todos.value.push({ user: newEmp.user, task: newEmp.task, targetDate: newEmp.targetDate })
-    //     // newEmp.value = ''
-    //     resetForm()
-    // }
+    const searchByDept = async()=>{
+        console.log(selected.value)
+        if(selected.value != undefined && selected.value != null)
+            await emsStore.getEmployeeByDepartment(selected.value) 
+    }
 
-    // function editEmp(emp) {
-    //     // editingEmp.value = emp
-    //     editingEmp.value = { ...emp } // Create a copy to avoid direct mutations
-    // }
-    // function updateEmp() {
-    //     editingEmp.value='';
-    // }
-    // function deleteEmp(emp) {
-    //     empList.value = empList.value.filter((t) => t !== emp)
-    // }
-    
+    const sortEmployeeByJoiningDate = async()=>{
+        console.log(orderSelected.value)
+        if(orderSelected.value != undefined && orderSelected.value != null)
+            await emsStore.sortEmployeeByJoiningDate(orderSelected.value) 
+    }
+
+    fetchEmps()    
 </script>
 <template>
     <section id="emsform">
         <h2>Employee Management System</h2>
         <div v-if="emsStore.error" class="errormessage">{{ emsStore.error }}</div>
-        <EmsForm v-if="!editingEmp" v-model:loading="loading" v-model:emp="newEmp" v-model:validationErrors="emsStore.validationErrors" form-label="Add: Employee" submit-label="Add Employee" reset-label="Reset" @submit="addEmployee" @reset="resetForm"/>
-        <EmsForm v-else v-model:loading="loading"  v-model:emp="editingEmp" v-model:validationErrors="emsStore.validationErrors"  form-label="Edit: Employee" submit-label="Update Employee" reset-label="Cancel" @submit="updateEmp" @reset="cancelEdit"/>
-    
-        <!-- <form v-if="!editingEmp" @submit.prevent="addEmployee">
-            <fieldset>
-                <legend>Add: Employee</legend>
-                <InputWithError inputId="Name" label="Name" v-model:task="newEmp.name" v-model:error="validationErrors.name" placeholder="Name" />
-                <InputWithError inputId="Address" label="Address" v-model:task="newEmp.address" v-model:error="validationErrors.address" placeholder="Address (10-200 chars)" type="textarea" />
-                <InputWithError inputId="Age" label="Age" v-model:task="newEmp.age" v-model:error="validationErrors.age" placeholder="Age" />
-                <InputWithError inputId="Designation" label="Designation" v-model:task="newEmp.designation" v-model:error="validationErrors.designation" placeholder="Designation" />
-                <InputWithError inputId="Department" label="Department" v-model:task="newEmp.department" v-model:error="validationErrors.department" placeholder="Department" />
-                <InputWithError inputId="JoiningDate" label="JoiningDate" v-model:task="newEmp.joiningDate" v-model:error="validationErrors.joiningDate" type="date" :max="today" />
-            </fieldset>
+        <EmsForm v-if="!editingEmp" v-model:loading="emsStore.loading" v-model:emp="newEmp" v-model:validationErrors="emsStore.validationErrors" form-label="Add: Employee" submit-label="Add Employee" reset-label="Reset" @submit="addEmployee" @reset="resetForm"/>
+        <EmsForm v-else v-model:loading="emsStore.loading"  v-model:emp="editingEmp" v-model:validationErrors="emsStore.validationErrors"  form-label="Edit: Employee" submit-label="Update Employee" reset-label="Cancel" @submit="updateEmp" @reset="cancelEdit"/>
+    </section>
+    <section  id="showhide">
+        <h2>Search and Sort</h2>
+        <fieldset class="grid">
+            <label>Search By Department</label><input type="radio" v-model="pick" :value="0" @click="radioClick(true)"/>
+            <label>Sort By Joining Date</label><input type="radio" v-model="pick" :value="1" @click="radioClick(false)" />
+        </fieldset>
+    </section>
+    <section v-if="isShow" id="seachEmp">
+        <h2>Search Employee By Department</h2>
+        <div>
             <fieldset class="grid">
-                <button type="submit" class="outline" :aria-busy="loading" :disabled="loading">Add Employee</button>
-                <button type="button" @click="resetForm">Reset</button>
+                <label style="align-content: center;">Select Department</label>
+                <select  label="Name" name="searchdept" id="searchdept" v-model="selected">
+                    <option disabled value="">Please select one</option>
+                    <option value="DU1">DU1</option>
+                    <option value="DU2">DU2</option>
+                </select>
+                <button type="submit" class="outline" :aria-busy="emsStore.loading" @click="searchByDept">Search</button>
+                <button type="submit" class="outline" :aria-busy="emsStore.loading" @click="fetchEmps">Clear</button>
             </fieldset>
-        </form>
-        <form v-else @submit.prevent="updateEmp">
-            <fieldset>
-                <legend>Edit: Employee</legend>
-                <InputWithError inputId="Name" label="Name" v-model:task="editingEmp.name" v-model:error="validationErrors.name" placeholder="Name" />
-                <InputWithError inputId="Address" label="Address" v-model:task="editingEmp.address" v-model:error="validationErrors.address" placeholder="Address (10-200 chars)" type="textarea" />
-                <InputWithError inputId="Age" label="Age" v-model:task="editingEmp.age" v-model:error="validationErrors.age" placeholder="Age" />
-                <InputWithError inputId="Designation" label="Designation" v-model:task="editingEmp.designation" v-model:error="validationErrors.designation" placeholder="Designation" />
-                <InputWithError inputId="Department" label="Department" v-model:task="editingEmp.department" v-model:error="validationErrors.department" placeholder="Department" />
-                <InputWithError inputId="JoiningDate" label="JoiningDate" v-model:task="editingEmp.joiningDate" v-model:error="validationErrors.joiningDate" type="date" :max="today" />
-           </fieldset>
+            <!-- <InputWithError inputId="Name" label="Name" v-model:task="emp.name" v-model:error="validationErrors.name" placeholder="Name" /> -->
+            <!-- Search <input name="query" v-model="searchQuery">  -->
+        </div>
+    </section>
+    <section v-if="!isShow" id="sortEmp">
+        <h2>Sort Employee By Joining Date</h2>
+        <div>
             <fieldset class="grid">
-                <button type="submit" :aria-busy="loading" :disabled="loading">Update Employee</button>
-                <button type="button" @click="cancelEdit">Cancel</button>
+                <label style="align-content: center;">Select Sort Order</label>
+                <select  label="Name" name="sortByDate" id="sortByDate" v-model="orderSelected">
+                    <option disabled value="">Please select one</option>
+                    <option value="0">Ascending</option>
+                    <option value="1">Descending</option>
+                </select>
+                <button type="submit" class="outline" :aria-busy="emsStore.loading" @click="sortEmployeeByJoiningDate">Search</button>
+                <button type="submit" class="outline" :aria-busy="emsStore.loading" @click="fetchEmps">Clear</button>
             </fieldset>
-        </form> -->
+        </div>
     </section>
     <section id="emptable">
         <h2>Employee List</h2>
         <div>
             <EmsTable :loading="emsStore.loading" :empList="emsStore.empList" @edit-click="editEmp" @remove-click="deleteEmp" />
-            <!-- <table v-if="empList.length">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Address</th>
-                        <th>Joining Date</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="emp in empList" :key="emp.id">
-                        <td>{{ emp.name }} </td>
-                        <td>{{ emp.address }}</td>
-                        <td>{{ emp.joiningDate }}</td>
-                        <td><button @click="editEmp(emp)">Edit</button></td>
-                        <td><button @click="deleteEmp(emp,emp.id)">Delete</button></td>
-                    </tr>
-                </tbody>
-            </table> -->
         </div>
     </section>
 </template>
