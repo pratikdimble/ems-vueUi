@@ -7,7 +7,7 @@
                 <InputWithError inputId="Age" label="Age" v-model:task="emp.age" v-model:error="validationErrors.age" placeholder="Age" />
                 <InputWithError inputId="Designation" label="Designation" v-model:task="emp.designation" v-model:error="validationErrors.designation" placeholder="Designation" />
                 <InputWithError inputId="Department" label="Department" v-model:task="emp.department" v-model:error="validationErrors.department" placeholder="Department" />
-                <InputWithError inputId="JoiningDate" label="JoiningDate" v-model:task="emp.joiningDate" v-model:error="validationErrors.joiningDate" type="date" :max="today" />
+                <InputWithError inputId="JoiningDate" label="JoiningDate" v-model:task="emp.joiningDate" v-model:error="validationErrors.joiningDate" type="date" :min="today" />
             </fieldset>
         <fieldset class="grid">
             <button type="submit" class="outline" :aria-busy="loading" :disabled="loading">{{submitLabel}}</button>
