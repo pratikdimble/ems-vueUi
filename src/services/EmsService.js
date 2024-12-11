@@ -4,6 +4,7 @@ import { EmsModel} from "./EmsModel";
 const API_BASE_URL = "http://localhost:8080/ems";
 const API_SEARCH_BY_DEPT = "/users/department/";
 const SORT_EMPLOYEE_JOIN_DATE_ASC_DESC = "/users/sort/"
+const USER_DETAILS = "/users/";
 
 export const EmsService = {
   async getEmployees() {
@@ -12,6 +13,15 @@ export const EmsService = {
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch employees");
+    }
+  },
+
+  async getEmployeesByUser(userName) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}${USER_DETAILS}${userName}`);
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch employee details");
     }
   },
 

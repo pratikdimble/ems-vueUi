@@ -19,6 +19,16 @@ export const useEmsStore = defineStore('emsStore', {
                 this.loading = false;
             }
         },
+        async fetchEmpsByUser(userName) {
+            this.loading = true;
+            try {
+                this.empList = await EmsService.getEmployeesByUser(userName)
+            } catch (err) {
+                this.error = 'Failed to fetch employee details';
+            } finally {
+                this.loading = false;
+            }
+        },
         async addEmployee(newEmp) {
             this.loading = true;
             const errors = EmsModel.validate(newEmp);
