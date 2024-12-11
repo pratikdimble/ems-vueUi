@@ -1,11 +1,9 @@
 <script setup>
-import EmsHeader from './components/EmsHeader.vue'
-import Main from './components/Main.vue';
+import { useUserStore } from './stores/userStore';
+const userStore = useUserStore()
+userStore.load();
 </script>
-
 <template>
-  <!-- <EmsHeader /> -->
-  <Main />
+  <router-view />
 </template>
-
-<style scoped> </style>
+<style scoped></style>

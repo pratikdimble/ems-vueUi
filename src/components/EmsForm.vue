@@ -4,6 +4,8 @@
             <legend>{{ formLabel }}</legend>
                 <InputWithError inputId="Name" label="Name" v-model:task="emp.name" v-model:error="validationErrors.name" placeholder="Name" />
                 <InputWithError inputId="Address" label="Address" v-model:task="emp.address" v-model:error="validationErrors.address" placeholder="Address (10-200 chars)" type="textarea" />
+                <InputWithError inputId="Title" label="Title" v-model:task="emp.title" v-model:error="validationErrors.title" placeholder="Title (5-50 chars)"/>
+                <InputWithError inputId="Task" label="Task" v-model:task="emp.task" v-model:error="validationErrors.task" placeholder="Task (10-200 chars)" type="textarea" />
                 <InputWithError inputId="Age" label="Age" v-model:task="emp.age" v-model:error="validationErrors.age" placeholder="Age" />
                 <InputWithError inputId="Designation" label="Designation" v-model:task="emp.designation" v-model:error="validationErrors.designation" placeholder="Designation" />
                 <InputWithError inputId="Department" label="Department" v-model:task="emp.department" v-model:error="validationErrors.department" placeholder="Department" />

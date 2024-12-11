@@ -13,11 +13,11 @@ export const EmsModel = {
       const today = new Date();
       const joiningDate = new Date(emp.joiningDate);
   
-      if (!emp.joiningDate || isNaN(joiningDate.getTime())) {
-        errors.joiningDate = "Target date is required";
-      } else if (joiningDate > today) {
-        errors.joiningDate = "Joining date must be today or in the past";
-      }
+      // if (!emp.joiningDate || isNaN(joiningDate.getTime())) {
+      //   errors.joiningDate = "Target date is required";
+      // } else if (joiningDate > today) {
+      //   errors.joiningDate = "Joining date must be today or in the past";
+      // }
   
       console.log("validation errors:", errors);
   
