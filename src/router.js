@@ -8,6 +8,7 @@ import AuthLayout from './layout/AuthLayout.vue'
 import HomeLayout from './layout/HomeLayout.vue'
 
 import { useUserStore } from './stores/userStore';
+import EmsSearchView from './views/EmsSearchView.vue'
 
 function isLoggedIn() {
     const userStore = useUserStore()
@@ -53,7 +54,14 @@ const routes = [
                 name: 'EmployeeEdit',
                 component: EmsEditView,
                 props: true,
-            }],
+            },
+            {
+                path: '/search',
+                name: 'EmployeeSearch',
+                component: EmsSearchView,
+                props: true,
+            }
+        ],
         meta: { requiresAuth: true }
     },
     {
